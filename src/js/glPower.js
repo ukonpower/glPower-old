@@ -57,7 +57,6 @@ module.exports = class glPower{
             return null;
         }
     }
-
     /*------------------
         Uniforms
     -------------------*/
@@ -80,6 +79,7 @@ module.exports = class glPower{
     setUniform(uni){
         let type = uni.type;
         switch(type){
+            
             case 'uniformMatrix4fv':
                 this.gl[type](uni.location,false,uni.value);
                 break;
@@ -140,14 +140,17 @@ module.exports = class glPower{
         FrameBuffer
     -------------------*/
     cFbuffer(width,height,texUnit,floatMode = false){
+        let fb;
         if(floatMode){
-            this.fBuffer[texUnit] = this.getFbufferFloat(width,height,texUnit);
+            fb = this.getFbufferFloat(width,height,texUnit);
         }else{
-            this.fBuffer[texUnit] = this.getFbuffer(width,height,texUnit);
+            fb = this.getFbuffer(width,height,texUnit);
         }
        
-        this.gl.bindTexture(this.gl.TEXTURE_2D,this.fBuffer[texUnit].texture);
+        this.gl.bindTexture(this.gl.TEXTURE_2D,fb.texture);
         this.gl.clearColor(0,0,0,1);
+        
+        return fb;
     }
 
     getFbuffer(width,height,texUnit){
@@ -172,7 +175,7 @@ module.exports = class glPower{
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
         this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-        return {framebuffer: frameBuffer, renderbuffer: depthRenderBuffer, texture: fTexture};
+        return {framebuffer: frameBuffer, renderbuffer: depthRenderBuffer, texture: fTexture,texUnit:texUnit};
     }
 
     getFbufferFloat( width, height,texUnit){
@@ -196,19 +199,14 @@ module.exports = class glPower{
         this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, fTexture, 0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-        return {framebuffer: frameBuffer, texture: fTexture};
+        return {framebuffer: frameBuffer, texture: fTexture,texUnit:texUnit};
     }
 
-    selectFramebuffer(name){
-        if(name == null){
+    selectFramebuffer(fb){
+        if(fb == null){
             this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,null);
         }else{
-            if(this.fBuffer[name]){
-                this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,this.fBuffer[name].framebuffer)
-            }else{
-                console.log("unknown fbuffer");
-                return;
-            }
+            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,fb.framebuffer)
         }   
     }
 
@@ -224,7 +222,6 @@ module.exports = class glPower{
             let att = obj.attributes[k];
             this.setAttribute(att);
         }
-
         //update uniforms
         for(let k in obj.uniforms){
             let uni = obj.uniforms[k];
