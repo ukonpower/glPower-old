@@ -1,11 +1,11 @@
-const { Vector3, Vector4, Matrix4 } = require('matrixgl');
-const GLPower = require('./glPower')
+import { Vector3, Vector4, Matrix4 } from 'matrixgl';
+import GLPower from './glPower';
 
-const screenVert = require('../shader/screen.vs');
-const renderFrag = require('../shader/render.fs');
+import screenVert from '../shader/screen.vs';
+import renderFrag from '../shader/render.fs';
 
-const boxVert = require('../shader/box.vs');
-const boxFrag = require('../shader/box.fs');
+import boxVert from '../shader/box.vs';
+import boxFrag from '../shader/box.fs';
 
 class APP{
     constructor(){
@@ -99,7 +99,7 @@ class APP{
 
         this.glp.selectFramebuffer(null);
         this.screen.uniforms.time.value = this.time;
-        this.screen.uniforms.texture.value = this.fbuffer.texUnit;
+        this.screen.uniforms.texture.value = this.fbuffer;
         this.glp.draw(this.screen,"MESH");
 
         requestAnimationFrame(this.animate.bind(this));
