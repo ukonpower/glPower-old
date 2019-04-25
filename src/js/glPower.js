@@ -4,7 +4,7 @@ export default class glPower {
         this.gl = gl;
         this.objs = [];
         this.screen = {
-            vertices: [-1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0],
+            vertices: [-1.0, -1.0, 0.0, 1.0, -1.0, 0.0, -1.0, 1.0, 0.0, 1.0, 1.0, 0.0],
             index: [0, 1, 2, 1, 3, 2],
         };
 
@@ -160,7 +160,6 @@ export default class glPower {
             this.gl.bindTexture(this.gl.TEXTURE_2D, tex);
             this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, img);
             this.gl.generateMipmap(this.gl.TEXTURE_2D);
-            this.gl.bindTexture(this.gl.TEXTURE_2D, null);
             cb({
                 texture: tex,
                 texUnit: texUnit
